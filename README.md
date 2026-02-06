@@ -1,70 +1,81 @@
-# Getting Started with Create React App
+# Enterprise Operations Dashboard
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A reference implementation of a data-heavy enterprise UI built with **Next.js 14**, **React 18**, **TypeScript**, and **MUI**. The project showcases:
 
-## Available Scripts
+- **Front-end architecture** for industrial monitoring apps (layout shell, route-level pages, feature hooks).
+- **Design system wrappers** (`UiButton`, `UiTable`, `UiModal`, etc.) that sit atop MUI to enforce consistent props, accessibility, and testing hooks.
+- **Deterministic data flows** using React Query + mocked datasets to mimic real telemetry, KPIs, and configuration APIs without external services.
+- **Stateful data tooling** (table utilities, query error toggles, shared loading/empty/error states) for large table interactions.
 
-In the project directory, you can run:
+---
 
-### `npm start`
+## Getting Started
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Prerequisites
+- Node.js **18.17+** (Next.js 14 will not run on Node 16).
+- Yarn 1.22 (comes with the repo’s lockfile).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Install dependencies:
 
-### `npm test`
+```bash
+yarn install
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Run the Dev Server
 
-### `npm run build`
+```bash
+yarn dev
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The dashboard is served at http://localhost:3000 with hot reload enabled.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Run the Test Suite
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+yarn test --runInBand
+```
 
-### `npm run eject`
+Tests cover table utilities plus the Dashboard/Table View/Configuration pages with React Testing Library. All mocked APIs rely on deterministic timers, so `jest.useFakeTimers()` is employed inside the tests.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Linting
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+yarn lint
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+> **Note:** Linting requires Node ≥ 18.17. If you see `Node.js version >= v18.17.0 is required`, upgrade your local runtime.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+---
 
-## Learn More
+## Folder Structure
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```
+src/
+├─ components/
+│  ├─ dashboard/           # KPI-specific components (e.g., KpiCard)
+│  ├─ layout/              # App chrome (Sidebar, Header, AppLayout)
+│  └─ ui/                  # Design system wrappers + shared states
+├─ data/                   # Type definitions + deterministic mock data
+├─ hooks/                  # React Query hooks + helpers (error toggle, etc.)
+├─ pages/
+│  ├─ dashboard/           # KPI view rendering grid + summary table
+│  ├─ table-view/          # Full equipment table with modals
+│  ├─ configuration/       # Controlled form with validation + toast
+│  └─ _app.tsx             # ThemeProvider + global styles
+├─ tests/
+│  ├─ pages/               # Page-level React Testing Library suites
+│  ├─ utils/               # Pure utility + hook tests
+│  └─ testUtils.tsx        # renderWithProviders helper
+├─ theme.ts                # Centralized typography, spacing, focus states
+└─ utils/                  # Table utilities (filter/sort/pagination) + formatters
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+`tsconfig.jest.json`, `jest.config.cjs`, and `jest.setup.js` configure ts-jest, testing-library helpers, and Next.js shims. React Query clients in tests are provided via `renderWithProviders` to simulate the real app environment.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Key Concepts Demonstrated
 
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+1. **Data-heavy UI performance:** React Query caching + fake latency simulate production APIs, while utility hooks handle filtering, sorting, and pagination outside the components.
+2. **Design system layering:** Wrapper components restrict props, expose test IDs, enforce accessibility defaults, and centralize theming.
+3. **Resilient state UX:** Every remote call shares Loading/Empty/Error states, modals are accessible (focus trapping + Escape), and forms include inline validation with deterministic defaults.
