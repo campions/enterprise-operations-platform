@@ -12,6 +12,7 @@ A reference implementation of a data-heavy enterprise UI built with **Next.js 14
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js **18.17+** (Next.js 14 will not run on Node 16).
 - Yarn 1.22 (comes with the repo’s lockfile).
 
@@ -79,3 +80,7 @@ src/
 1. **Data-heavy UI performance:** React Query caching + fake latency simulate production APIs, while utility hooks handle filtering, sorting, and pagination outside the components.
 2. **Design system layering:** Wrapper components restrict props, expose test IDs, enforce accessibility defaults, and centralize theming.
 3. **Resilient state UX:** Every remote call shares Loading/Empty/Error states, modals are accessible (focus trapping + Escape), and forms include inline validation with deterministic defaults.
+
+# enterprise-operations-platform
+
+An enterprise operations platform with NextJS
